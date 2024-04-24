@@ -1,22 +1,6 @@
-declare 
+declare
 
-% Liste = forward | nil
-% Liste2 = turn | turn | forward | nil
-% Liste3 = Liste.1 | Liste2
-
-
-% fun {IterApp L Listupdt}
-%     case L
-%     of nil then {Append Listupdt L} %tu rajt t
-%     [] H|T then
-%         H | {IterApp T Listupdt}
-%     end
-% end
-
-% {Browse {IterApp Liste Liste2}}
 local
-    % Déclarez vos functions ici
-    % Declare your functions here
     NewSpaceship
     Change_dir
     Next
@@ -25,30 +9,10 @@ local
     NewPositions
     HeadSpaceship
     NewNewPositions
-    Spaceship
-
-in
-    % La fonction qui renvoit les nouveaux attributs du serpent après prise
-    % en compte des effets qui l'affectent et de son instruction
-    % The function that computes the next attributes of the spaceship given the effects
-    % affecting him as well as the instruction
-    % 
-    % instruction ::= forward | turn(left) | turn(right)
-    % P ::= <integer x such that 1 <= x <= 24>
-    % direction ::= north | south | west | east
-    % spaceship ::=  spaceship(
-    %               positions: [
-    %                  pos(x:<P> y:<P> to:<direction>) % Head
-    %                  ...
-    %                  pos(x:<P> y:<P> to:<direction>) % Tail
-    %               ]
-    %               effects: [scrap|revert|wormhole(x:<P> y:<P>)|... ...]
-    %            )
- 
-    % fun {Next Spaceship Instruction}
-    %    {Browse Instruction}
-    %    Spaceship
-    % end
+    List
+    Repeat
+    IterativeInstr
+ in
  
     fun {Next Spaceship Instruction}
        %Changement de direction en fonction du mouv de head pr que le nouveau head et l'ancien aient la meme dir
@@ -100,22 +64,43 @@ in
        end
     end
  
- 
-
-    fun {IterativeInstr Instruction}
-        fun{$ Spaceship}  Spaceship end | fun{$ Spaceship} Spaceship end | nil
+    fun {DecodeStrategy Strategy}
+       local
+       fun {DecodeStrategyAux Strategy List}
+          case Strategy
+          of nil then List
+          [] H|T then 
+            if {Label H} == repeat then % .1 car nil dcp faire une fction 
+                   
+                {DecodeStrategyAux T {Append List {Repeat H.1.1 H.times}}}
+                   
+            else 
+                {DecodeStrategyAux T {Append List {IterativeInstr H}}}
+                % {DecodeStrategyAux T {Append List {IterativeInstr H}.1}} %pas sur .1
+                % % {DecodeStrategyAux T X}
+            end
+        end
+    end
+    in 
+        {DecodeStrategyAux Strategy nil}
     end
 end
+ 
+    fun {Repeat I N} %L = [turn(right)] N = times:2
+       if N == 0 then nil
+       else 
+           fun {$ Spaceship} {Next Spaceship I} end | {Repeat I N-1}
+       end
+    end
+ 
+    fun {IterativeInstr Instruction}
+       fun {$ Spaceship} {Next Spaceship instruction} end | nil
+    end
+   Liststrat = [repeat([turn(right)] times:2) forward]
+   Spaceship = spaceship(positions:[pos(x:4 y:2 to:east) pos(x:3 y:2 to:east) pos(x:2 y:2 to:south)] effects:nil)
+   {Browse {Next {Next Spaceship turn(right)} turn(right)}}
+end
 
-X = {IterativeInstr forward}
-{Browse X}
-{Browse X.1}
-
-%     Liste = fun {$ Spaceship} {Next Spaceship turn(right)} end | fun {$ Spaceship} {Next Spaceship turn(left)} end | nil
-%     {Browse Liste}
-% end
-
-Spaceship = spaceship(positions:[pos(x:4 y:2 to:east) pos(x:3 y:2 to:east) pos(x:2 y:2 to:south)] effects:nil)
 
 %1 = spaceship(positions:[pos(x:4 y:3 to:south) pos(x:4 y:2 to:south) pos(x:3 y:2 to:east)] effects:nil)
 %2 = spaceship(positions:[pos(x:3 y:3 to:west) pos(x:4 y:3 to:west) pos(x:4 y:2 to:south)] effects:nil)
@@ -125,4 +110,4 @@ Spaceship = spaceship(positions:[pos(x:4 y:2 to:east) pos(x:3 y:2 to:east) pos(x
 % {Browse {DecodeStrategy Liststrat}}
 % {Browse {X.1 Spaceship}}
 
-{Browse {Next Spaceship turn(right)}}
+

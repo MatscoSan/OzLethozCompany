@@ -41,7 +41,9 @@ local
    NewPositions
    HeadSpaceship
    NewNewPositions
-
+   List
+   Repeat
+   IterativeInstr
 in
    % La fonction qui renvoit les nouveaux attributs du serpent après prise
    % en compte des effets qui l'affectent et de son instruction
@@ -114,9 +116,6 @@ in
       else {AdjoinAt L x L.x-1}
       end
    end
-
-
-
    
    % La fonction qui décode la stratégie d'un serpent en une liste de fonctions. Chacune correspond
    % à un instant du jeu et applique l'instruction devant être exécutée à cet instant au spaceship
@@ -128,12 +127,38 @@ in
    % strategy ::= <instruction> '|' <strategy>
    %            | repeat(<strategy> times:<integer>) '|' <strategy>
    %            | nil
+
    fun {DecodeStrategy Strategy}
-      [
-         fun{$ Spaceship}
-            Spaceship
+      local
+      fun {DecodeStrategyAux Strategy List}
+         case Strategy
+         of nil then List
+         [] H|T then 
+            if {Label H} == repeat then % .1 car nil dcp faire une fction 
+                  
+               {DecodeStrategyAux T {Append List {Repeat H.1.1 H.times}}}
+                  
+            else 
+               {DecodeStrategyAux T {Append List {IterativeInstr H}}}
+               % {DecodeStrategyAux T {Append List {IterativeInstr H}.1}} %pas sur .1
+               % % {DecodeStrategyAux T X}
+            end
          end
-      ]
+      end
+      in 
+         {DecodeStrategyAux Strategy nil}
+      end
+   end
+
+   fun {Repeat I N} %L = [turn(right)] N = times:2
+      if N == 0 then nil
+      else 
+          fun {$ Spaceship} {Next Spaceship I} end | {Repeat I N-1}
+      end
+   end
+
+   fun {IterativeInstr Instruction}
+      fun {$ Spaceship} {Next Spaceship instruction} end | nil
    end
 
       % Options
