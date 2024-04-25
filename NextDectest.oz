@@ -106,8 +106,5 @@ end
 %2 = spaceship(positions:[pos(x:3 y:3 to:west) pos(x:4 y:3 to:west) pos(x:4 y:2 to:south)] effects:nil)
 %3 = spaceship(positions:[pos(x:2 y:3 to:west) pos(x:3 y:3 to:west) pos(x:4 y:3 to:west)] effects:nil)
 
-% X = {DecodeStrategy Liststrat}
-% {Browse {DecodeStrategy Liststrat}}
-% {Browse {X.1 Spaceship}}
 
 
