@@ -45,6 +45,8 @@ local
    Shrink
    Length
    BigScrap
+   Malware
+   Incr
 in
    % La fonction qui renvoit les nouveaux attributs du serpent après prise
    % en compte des effets qui l'affectent et de son instruction
@@ -163,6 +165,8 @@ in
                {AdjoinAt Spaceship positions {Shrink Spaceship.positions Spaceship.positions}}
             elseif {Label H} == bigscrap then
                {AdjoinAt Spaceship positions {BigScrap Spaceship.positions Spaceship.positions}}
+	    elseif {Label H} == malware then
+               {AdjoinAt Spaceship positions {Malware Spaceship.positions}}
             else
             {Effect Spaceship T}          
             end
@@ -235,6 +239,22 @@ in
            {ReverseAux L L2 nil}
        end
    end
+
+   fun {Malware Pos}
+       if Pos.1.to == north then {AdjoinAt Pos.1 to east} | {Incr Pos.2} 
+       elseif Pos.1.to == east then {AdjoinAt Pos.1 to south} | {Incr Pos.2} 
+       elseif Pos.1.to == south then {AdjoinAt Pos.1 to west} | {Incr Pos.2} 
+       else {AdjoinAt Pos.1 to north} | {Incr Pos.2} 
+       end
+   end 
+   
+   fun {Incr L} 
+       case L of nil 
+       then nil
+       [] H|T then 
+          H | {Incr T}
+       end
+    end
  
    
    % La fonction qui décode la stratégie d'un serpent en une liste de fonctions. Chacune correspond
