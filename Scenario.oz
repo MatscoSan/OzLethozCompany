@@ -2,7 +2,7 @@ local
 	NoBomb=false|NoBomb
  in
 	config(bombLatency:3
-	   walls:false
+	   walls:true
 	   step: 0
 	   spaceships: [
 			spaceship(team:brown name:jason
@@ -43,6 +43,10 @@ local
 			bonus(position:pos(x:16 y:7) color:red    effect:revert target:catcher)
 			bonus(position:pos(x:16 y:3) color:red    effect:revert target:catcher)
 			bonus(position:pos(x:16 y:17) color:red    effect:revert target:catcher)
+			bonus(position:pos(x:10 y:10) color:white    effect:malware target:catcher)
+			bonus(position:pos(x:8 y:16) color:white    effect:malware target:catcher)
+			bonus(position:pos(x:17 y:5) color:white    effect:malware target:catcher)
+			bonus(position:pos(x:6 y:15) color:white    effect:malware target:catcher)
 		  ]
 	   bombs: [bomb(position:pos(x:15 y:12) explodesIn:3) bomb(position:pos(x:9 y:8) explodesIn:6)]
 	  )
